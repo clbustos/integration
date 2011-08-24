@@ -1,0 +1,9 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+lib/integration.rb
+spec/integration_spec.rb
+spec/spec.opts
+spec/spec_helper.rb

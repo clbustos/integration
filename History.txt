@@ -1,0 +1,3 @@
+=== 0.1.0 / 2011-08-23
+
+* Get code from http://rubyforge.org/projects/integral/ and converted to a gem.
