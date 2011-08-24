@@ -9,7 +9,7 @@ require 'rubyforge'
  Hoe.plugin :git
 # Hoe.plugin :inline
 # Hoe.plugin :racc
- Hoe.plugin :rubyforge
+# Hoe.plugin :rubyforge
 
 Hoe.spec 'integration' do
   self.developer('Ben Gimpert', 'NO_EMAIL')

@@ -226,24 +226,30 @@ class Integration
     def is_infinite?(v)
       v==Infinity or v==MInfinity
     end
+    # Methods available on pure ruby
     RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo]
+    # Methods available with Ruby/GSL library
     GSL_METHOD=[:qng, :qag]
-    # Get the integral for a function +f+, with limits +t1+ and
+    # Get the integral for a function +f+, with bounds +t1+ and
     # +t2+ given a hash of +options+. 
+    # If Ruby/GSL is available, you could use +Integration::Minfinity+
+    # and +Integration::Infinity+ as bounds. Method
     # Options are
     # [:tolerance]    Maximum difference between real and calculated integral.
     #                 Default: 1e-10
     # [:initial_step] Initial number of subdivitions
     # [:step]         Subdivitions increment on each iteration
-    # [:method]       Integration method. One of the following
-    #  * "rectangle" or "midpoint" for [n] quadrilateral subdivisions
-    #  * "trapezoid" for [n] trapezoid-al subdivisions
-    #  * "simpson" for [n] parabolic subdivisions
-    #  * "adaptive_quadrature" for recursive appoximations until error < 1/[n]
-    #  * "gauss" [n] weighted subdivisons using translated -1 -> +1 endpoints
-    #  * "romberg" extrapolation of recursion approximation until error < 1/[n]
-    #  * "monte_carlo" make [n] random samples, and check for above/below curve
-    
+    # [:method]       Integration method. 
+    # Methods are
+    # [:rectangle] for [:initial_step+:step*iteration] quadrilateral subdivisions
+    # [:trapezoid] for [:initial_step+:step*iteration] trapezoid-al subdivisions
+    # [:simpson]   for [:initial_step+:step*iteration] parabolic subdivisions
+    # [:adaptive_quadrature] for recursive appoximations until error [tolerance]
+    # [:gauss] [:initial_step+:step*iteration] weighted subdivisons using translated -1 -> +1 endpoints
+    # [:romberg] extrapolation of recursion approximation until error < [tolerance]
+    # [:monte_carlo] make [:initial_step+:step*iteration] random samples, and check for above/below curve
+    # [:qng] GSL QNG non-adaptive Gauss-Kronrod integration
+    # [:qag] GSL QAG adaptive integration, with support for infinite bounds
     def integrate(t1,t2,options=Hash.new, &f)
       inf_bounds=(is_infinite?(t1) or is_infinite?(t2))
       raise "No function passed" unless block_given?
