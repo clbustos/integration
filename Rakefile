@@ -4,6 +4,7 @@ require 'rubygems'
 require 'hoe'
 require 'integration'
 require 'rubyforge'
+
 # Hoe.plugin :compiler
 # Hoe.plugin :gem_prelude_sucks
  Hoe.plugin :git
@@ -12,8 +13,11 @@ require 'rubyforge'
 # Hoe.plugin :rubyforge
 
 Hoe.spec 'integration' do
+
   self.developer('Ben Gimpert', 'NO_EMAIL')
+
   self.developer('Claudio Bustos', 'clbustos_at_gmail.com')
+
   self.version=Integration::VERSION
   self.extra_dev_deps << ["rspec",">=2.0"] << ["rubyforge",">=0"]
 

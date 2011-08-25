@@ -55,45 +55,37 @@ class Integration
       end
     end
     
+    # [t1] lower bound
+    # [t2] higher bound
+    # [n] number of subdivisions
+    def get_nodes(t1,t2,n,mid_point=false,&f)
+      d=(t2-t1) / n.to_f
+      nodes=(0..n).map {|i|
+        mid_point ? f.call(t1+i*d+d/2) : f.call(t1+i*d)
+      }
+      nodes.delete_at(nodes.size-1) if mid_point
+      [nodes,d]
+    end
     # Rectangle method
     # +n+ implies number of subdivisions
-    def rectangle(t1, t2, n)
-      total_area = 0
-      t = t1
-      dt = (t2 - t1) / n.to_f
-      dt_half = dt / 2
-      
-      while (t + dt_half) <= t2
-      height = yield(t + dt_half)
-      area = dt * height
-      total_area += area
-      t += dt
-      end
-      return total_area
-
+    # Source:
+    #   * Ayres : Outline of calculus
+    def rectangle(t1, t2, n, &f)
+      nodes,d=get_nodes(t1,t2,n,true,&f)
+      nodes.inject(0) {|ac,v| ac+v}*d
     end
     alias_method :midpoint, :rectangle
-  
-    def trapezoid(t1, t2, n)
-      total_area = 0
-      t = t1
-      dt = (t2 - t1) / n.to_f
-      prev_height = nil
-      while (t + dt) <= t2
-        if prev_height.nil?
-          height1 = yield(t)
-        else
-          height1 = prev_height
-        end
-        height2 = yield(t + dt)
-        area = dt * ((height1 + height2) / 2)
-        total_area += area
-        t += dt
-        prev_height = height2
-      end
-      return total_area
+    # Trapezoid method
+    # +n+ implies number of subdivisions
+    def trapezoid(t1, t2, n, &f)
+      nodes,d=get_nodes(t1,t2,n,false,&f)
+      out=(d/2.0)*( nodes.first + 
+          2*(nodes[1,nodes.size-2].inject(0) {|ac,v| ac+v} ) +
+          nodes.last
+      )
+      return out
     end
-  
+    
     def simpson(t1, t2, n)
       n += 1 unless n % 2 == 0
       dt = (t2.to_f - t1) / n
@@ -108,8 +100,9 @@ class Integration
           total_area += 4 * yield(t)
         end
       end
-      total_area *= dt / 3
-      return total_area
+      #total_area *= dt / 3
+      #return total_area
+      total_area*dt/3.0
     end
   
     def adaptive_quadrature(a, b, tolerance)
@@ -263,7 +256,7 @@ class Integration
         upper_bound = [t1, t2].max
       end
       def_method=(has_gsl?) ? :qag : :simpson
-      default_opts={:tolerance=>1e-10, :initial_step=>16,:step=>16, :method=>def_method}
+      default_opts={:tolerance=>1e-10, :initial_step=>16, :step=>16, :method=>def_method}
       options=default_opts.merge(options)
       if RUBY_METHOD.include? options[:method]
         raise "Ruby methods doesn't support infinity bounds" if inf_bounds
@@ -325,13 +318,20 @@ class Integration
         #puts "iniciando"
         value=method_obj.call(lower_bound, upper_bound, current_step, &f)
         previous=value+(tolerance*2)
+        diffs=[]
         while((previous-value).abs > tolerance) do
-          #puts(value)
+          #puts("Valor:#{value}, paso:#{current_step}")
           #puts(current_step)
+          diffs.push((previous-value).abs)
+          #diffs.push value
           current_step+=step
           previous=value
+          #puts "Llamando al metodo"
+          
           value=method_obj.call(lower_bound, upper_bound, current_step, &f)
         end
+        #p diffs
+        
         value
       end
     end
