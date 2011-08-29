@@ -54,57 +54,42 @@ class Integration
         class_variable_get(cv)
       end
     end
-    
-    # [t1] lower bound
-    # [t2] higher bound
-    # [n] number of subdivisions
-    def get_nodes(t1,t2,n,mid_point=false,&f)
-      d=(t2-t1) / n.to_f
-      nodes=(0..n).map {|i|
-        mid_point ? f.call(t1+i*d+d/2) : f.call(t1+i*d)
-      }
-      nodes.delete_at(nodes.size-1) if mid_point
-      [nodes,d]
-    end
     # Rectangle method
     # +n+ implies number of subdivisions
     # Source:
     #   * Ayres : Outline of calculus
     def rectangle(t1, t2, n, &f)
-      nodes,d=get_nodes(t1,t2,n,true,&f)
-      nodes.inject(0) {|ac,v| ac+v}*d
+      d=(t2-t1) / n.to_f
+      n.times.inject(0) {|ac,i| 
+        ac+f[t1+d*(i+0.5)]
+      }*d
     end
     alias_method :midpoint, :rectangle
     # Trapezoid method
     # +n+ implies number of subdivisions
+    # Source:
+    #   * Ayres : Outline of calculus
     def trapezoid(t1, t2, n, &f)
-      nodes,d=get_nodes(t1,t2,n,false,&f)
-      out=(d/2.0)*( nodes.first + 
-          2*(nodes[1,nodes.size-2].inject(0) {|ac,v| ac+v} ) +
-          nodes.last
-      )
-      return out
+      d=(t2-t1) / n.to_f
+      (d/2.0)*(f[t1]+
+      2*(1..(n-1)).inject(0){|ac,i| 
+      ac+f[t1+d*i]
+      }+f[t2])
     end
-    
-    def simpson(t1, t2, n)
+    # Simpson's rule
+    # +n+ implies number of subdivisions
+    # Source:
+    #   * Ayres : Outline of calculus
+    def simpson(t1, t2, n, &f)
       n += 1 unless n % 2 == 0
-      dt = (t2.to_f - t1) / n
-      total_area = 0
-      (0..n).each do |i|
-        t = t1 + (dt * i)
-        if i.zero? || (i == n)
-          total_area += yield(t)
-        elsif i % 2 == 0
-          total_area += 2 * yield(t)
-        else
-          total_area += 4 * yield(t)
-        end
-      end
-      #total_area *= dt / 3
-      #return total_area
-      total_area*dt/3.0
+      d=(t2-t1) / n.to_f      
+      out= (d / 3.0)*(f[t1.to_f].to_f+
+      ((1..(n-1)).inject(0) {|ac,i|
+        ac+((i%2==0) ? 2 : 4)*f[t1+d*i]  
+      })+f[t2.to_f].to_f)
+      out
     end
-  
+      
     def adaptive_quadrature(a, b, tolerance)
       h = (b.to_f - a) / 2
       fa = yield(a)

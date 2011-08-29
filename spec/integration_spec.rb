@@ -9,12 +9,7 @@ describe Integration do
     end
   end
 
-  it "should return correct values for get_nodes" do
-    a=rand()
-    f=lambda {|x| x*a}
-    expected=[[0.0,1.0*a,2.0*a,3.0*a],1.0]
-    Integration.get_nodes(0,3,3,&f).should==expected
-  end
+
   it "should return correct for trapezoid" do
     a=rand()
     b=rand()*10
