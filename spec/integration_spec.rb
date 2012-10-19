@@ -22,9 +22,13 @@ describe Integration do
     Integration.integrate(0,1,{:tolerance=>1e-12,:method=>:adaptive_quadrature},&normal_pdf).should be_within(1e-11).of(0.341344746068)
   end
   it "should return a correct value for a complex integration with gsl methods" do
-    normal_pdf=lambda {|x| (1/Math.sqrt(2*Math::PI))*Math.exp(-(x**2/2))}
-    Integration.integrate(0,1,{:tolerance=>1e-12,:method=>:qng},&normal_pdf).should be_within(1e-11).of(0.341344746068)
-    Integration.integrate(0,1,{:tolerance=>1e-12,:method=>:qag},&normal_pdf).should be_within(1e-11).of(0.341344746068)
+    if Integration.has_gsl?
+      normal_pdf=lambda {|x| (1/Math.sqrt(2*Math::PI))*Math.exp(-(x**2/2))}
+      Integration.integrate(0,1,{:tolerance=>1e-12,:method=>:qng},&normal_pdf).should be_within(1e-11).of(0.341344746068)
+      Integration.integrate(0,1,{:tolerance=>1e-12,:method=>:qag},&normal_pdf).should be_within(1e-11).of(0.341344746068)
+    else
+      pending("GSL not available")
+    end
   end
 
       
