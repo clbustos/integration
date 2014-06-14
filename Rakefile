@@ -1,27 +1,40 @@
 # -*- ruby -*-
 $:.unshift(File.expand_path(File.dirname(__FILE__)+"/lib/"))
 require 'rubygems'
-require 'hoe'
 require 'integration'
-require 'rubyforge'
+require 'bundler'
 
-# Hoe.plugin :compiler
-# Hoe.plugin :gem_prelude_sucks
- Hoe.plugin :git
-# Hoe.plugin :inline
-# Hoe.plugin :racc
-# Hoe.plugin :rubyforge
+gemspec = eval(IO.read("integration.gemspec"))
 
-Hoe.spec 'integration' do
 
-  self.developer('Ben Gimpert', 'NO_EMAIL')
-
-  self.developer('Claudio Bustos', 'clbustos_at_gmail.com')
-
-  self.version=Integration::VERSION
-  self.extra_dev_deps << ["rspec",">=2.0"] << ["rubyforge",">=0"]
-
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
 end
-# git log --pretty=format:"*%s[%cn]" v0.5.0..HEAD >> History.txt
-# vim: syntax=ruby
 
+require "rake/gempackagetask"
+Rake::GemPackageTask.new(gemspec).define
+
+desc "install the gem locally"
+task :install => [:package] do
+  sh %{gem install pkg/integration-#{Integration::VERSION}.gem}
+end
+
+require 'rspec/core/rake_task'
+require 'rspec/core'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = FileList['spec/**/*_spec.rb']
+end
+
+
+desc "Open an irb session preloaded with integration"
+task :console do
+  sh "irb -rubygems -I lib -r integration.rb"
+end
+
+task :default => :spec
+# vim: syntax=ruby
