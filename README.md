@@ -1,5 +1,6 @@
 # Integration
 
+[![Build Status](https://travis-ci.org/arrowcircle/integration.svg?branch=master)](https://travis-ci.org/arrowcircle/integration)
 Numerical integration for Ruby, with a simple interface
 
 ## Installation
@@ -33,7 +34,7 @@ Integration.integrate(0, Integration::Infinity, {tolerance: 1e-10}, &func)
 ## Available methods
 Pure Ruby methods:
 
-* Simpson (`:simpson`, default method) 
+* Simpson (`:simpson`, default method)
 * Rectangular (`:rectangular`)
 * Trapezoidal (`:trapezoidal`)
 * Adaptive quadrature (`:adaptive_quadrature`)

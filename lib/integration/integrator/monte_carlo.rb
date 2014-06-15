@@ -32,8 +32,4 @@ class Integration::MonteCarlo < Integration::Integrator
   def width
     (upper_bound - lower_bound).to_f
   end
-
-  def height
-    max - min
-  end
 end

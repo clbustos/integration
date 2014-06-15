@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'integration'
+require 'integration/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'integration'
-  spec.version       = Integration::Version::VERSION
+  spec.version       = IntegrationLib::VERSION
   spec.authors       = ['Ben Gimpert', 'Claudio Bustos', 'Oleg Bovykin']
   spec.email         = ['clbustos_at_gmail.com', 'oleg.bovykin@gmail.com']
   spec.summary       = %q{Integration methods, based on original work by Beng}
@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
 
-  spec.add_dependency 'rb-gsl'
-  spec.add_dependency 'activesupport'
+  spec.add_runtime_dependency 'rb-gsl'
+  spec.add_runtime_dependency 'activesupport'
 end

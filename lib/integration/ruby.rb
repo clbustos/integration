@@ -1,4 +1,5 @@
 require 'integration/integrator'
+require 'active_support/core_ext/string'
 class Integration::Ruby
   M_INFINITY = :minfinity
   INFINITY = :infinity

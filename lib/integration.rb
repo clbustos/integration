@@ -1,7 +1,5 @@
-require 'active_support/core_ext/string'
-
 class Integration
-  require 'integration/version'
+  # require 'integration/version'
   require 'integration/gsl'
   require 'integration/ruby'
 
