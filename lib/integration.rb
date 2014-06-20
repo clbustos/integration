@@ -116,6 +116,15 @@ class Integration
       end
       ac
     end
+
+    def milne(t1, t2, n, &f)
+      d = (t2-t1) / n.to_f 
+      ac = 0
+      (0..n-1).each do |i|
+        ac+=(d/3.0)*(2*f[t1+i*d+d/4]-f[t1+i*d+d/2]+2*f[t1+i*d+3*d/4])
+      end
+      ac
+    end
     
     def adaptive_quadrature(a, b, tolerance)
       h = (b.to_f - a) / 2
@@ -268,7 +277,7 @@ class Integration
       v==Infinity or v==MInfinity
     end
     # Methods available on pure ruby
-    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid]
+    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid, :milne]
     # Methods available with Ruby/GSL library
     GSL_METHOD=[:qng, :qag]
     # Get the integral for a function +f+, with bounds +t1+ and
