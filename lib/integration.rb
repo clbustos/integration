@@ -89,6 +89,18 @@ class Integration
       })+f[t2.to_f].to_f)
       out
     end
+
+    def simpson3by8(t1, t2, n, &f)
+      d = (t2-t1) / n.to_f 
+      ac = 0
+      (0..n-1).each do |i|
+        ac+=(d/4.0)*(f[t1+i*d]+3*f[ti+i*d+d/3]+3*f[t1+i*d+2*d/3]+f[t1+(i+1)*d])
+      end
+      ac
+    end
+
+
+
       
     def adaptive_quadrature(a, b, tolerance)
       h = (b.to_f - a) / 2
@@ -158,9 +170,9 @@ class Integration
       return ((t2 - t1) / 2.0) * sum
     end
 
-    def gauss_kronrod(t1,t2,n)
+    def gauss_kronrod(t1,t2,n,points)
       #g7k15
-      case n
+      case points
         when 15
           z = [-0.9914553711208126, -0.9491079123427585, -0.8648644233597691, -0.7415311855993945, -0.5860872354676911, -0.4058451513773972, -0.20778495500789848, 0.0, 0.20778495500789848, 0.4058451513773972, 0.5860872354676911, 0.7415311855993945, 0.8648644233597691, 0.9491079123427585, 0.9914553711208126]
           w = [0.022935322010529224, 0.06309209262997856, 0.10479001032225019, 0.14065325971552592, 0.1690047266392679, 0.19035057806478542, 0.20443294007529889, 0.20948214108472782, 0.20443294007529889, 0.19035057806478542, 0.1690047266392679, 0.14065325971552592, 0.10479001032225019, 0.06309209262997856, 0.022935322010529224]
@@ -333,10 +345,13 @@ class Integration
         if(method==:gauss)
           initial_step=10 if initial_step>10
           tolerance=initial_step
+          method_obj.call(lower_bound, upper_bound, tolerance, &f)
         elsif (method==:gauss_kronrod)
-          tolerance = points if points != nil
+          initial_step=10 if initial_step>10
+          tolerance=initial_step
+          points = points if points != nil
+          method_obj.call(lower_bound, upper_bound, tolerance, points, &f)
         end
-        method_obj.call(lower_bound, upper_bound, tolerance, &f)
       else
         #puts "iniciando"
         value=method_obj.call(lower_bound, upper_bound, current_step, &f)
