@@ -99,6 +99,14 @@ class Integration
       ac
     end
 
+    def boole(t1, t2, n, &f)
+      d = (t2-t1) / n.to_f 
+      ac = 0
+      (0..n-1).each do |i|
+        ac+=(d/90.0)*(7*f[t1+i*d]+32*f[t1+i*d+d/4]+12*f[t1+i*d+d/2]+32*f[t1+i*d+3*d/4]+7*f[t1+(i+1)*d])
+      end
+      ac
+    end
     
     def adaptive_quadrature(a, b, tolerance)
       h = (b.to_f - a) / 2
@@ -251,7 +259,7 @@ class Integration
       v==Infinity or v==MInfinity
     end
     # Methods available on pure ruby
-    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8]
+    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8, :boole]
     # Methods available with Ruby/GSL library
     GSL_METHOD=[:qng, :qag]
     # Get the integral for a function +f+, with bounds +t1+ and
