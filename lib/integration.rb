@@ -108,7 +108,7 @@ class Integration
       ac
     end
 
-    def opentrapezoid(t1, t2, n, &f)
+    def open_trapezoid(t1, t2, n, &f)
       d = (t2-t1) / n.to_f 
       ac = 0
       (0..n-1).each do |i|
@@ -268,7 +268,7 @@ class Integration
       v==Infinity or v==MInfinity
     end
     # Methods available on pure ruby
-    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8, :boole, :opentrapezoid]
+    RUBY_METHOD=[:rectangle,:trapezoid,:simpson, :adaptive_quadrature , :gauss, :romberg, :monte_carlo, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid]
     # Methods available with Ruby/GSL library
     GSL_METHOD=[:qng, :qag]
     # Get the integral for a function +f+, with bounds +t1+ and
