@@ -94,14 +94,12 @@ class Integration
       d = (t2-t1) / n.to_f 
       ac = 0
       (0..n-1).each do |i|
-        ac+=(d/4.0)*(f[t1+i*d]+3*f[ti+i*d+d/3]+3*f[t1+i*d+2*d/3]+f[t1+(i+1)*d])
+        ac+=(d/8.0)*(f[t1+i*d]+3*f[t1+i*d+d/3]+3*f[t1+i*d+2*d/3]+f[t1+(i+1)*d])
       end
       ac
     end
 
-
-
-      
+    
     def adaptive_quadrature(a, b, tolerance)
       h = (b.to_f - a) / 2
       fa = yield(a)
