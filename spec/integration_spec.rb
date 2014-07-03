@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__)+"/spec_helper.rb")
 describe Integration do
   a=lambda {|x| x**2}
   # Integration over [1,2]=x^3/3=7/3
-  methods=[:rectangle,:trapezoid, :simpson, :adaptive_quadrature,  :romberg]
+  methods=[:rectangle,:trapezoid, :simpson, :adaptive_quadrature,  :romberg, :gauss, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid, :milne]
   methods.each do |m|
     it "should integrate correctly with ruby method #{m}" do
       Integration.integrate(1,2,{:method=>m,:tolerance=>1e-8},&a).should be_within(1e-6).of(7.0 / 3 )
