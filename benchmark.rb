@@ -1,35 +1,153 @@
+# Checking the speed of different integraiton methods
+
 require 'benchmark'
 require 'integration'
 
+iterations = 100
+puts "Benchmarking with #{iterations} iterations"
+
+# Benchmarking for function f(x) = x
+
 f1 = lambda{|x| x}
 puts "f(x) = x"
-Benchmark.bm do |x|
-  x.report("Rectangle: 			")		{Integration.integrate(0,1,{:method=>:rectangle},&f1)}
-  x.report("Trapezoid: 			")		{Integration.integrate(0,1,{:method=>:trapezoid},&f1)}
-  x.report("Simpson: 			")			{Integration.integrate(0,1,{:method=>:simpson},&f1)}
-  x.report("Simpson 3/8: 		")		{Integration.integrate(0,1,{:method=>:simpson3by8},&f1)}
-  x.report("Boole: 				")			{Integration.integrate(0,1,{:method=>:boole},&f1)}
-  x.report("Open Trapezoid: 	")  	{Integration.integrate(0,1,{:method=>:open_trapezoid},&f1)}
-  x.report("Milne: 				")  			{Integration.integrate(0,1,{:method=>:milne},&f1)}
-  x.report("Adaptive Quadrature:")  {Integration.integrate(0,1,{:method=>:adaptive_quadrature},&f1)}
-  x.report("Gauss: 				")			{Integration.integrate(0,1,{:method=>:gauss},&f1)}
-  x.report("Gauss Kronrod: 		")	{Integration.integrate(0,1,{:method=>:gauss_kronrod},&f1)}
-  x.report("Romberg: 			")			{Integration.integrate(0,1,{:method=>:romberg},&f1)}
-  #x.report("Monte Carlo:")		{Integration.integrate(0,1,{:method=>:monte_carlo},&f1)}
+Benchmark.bm(25) do |bm|
+  
+  bm.report("Rectangle:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:rectangle},&f1)
+    end
+  end
+
+  bm.report("Trapezoid:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:trapezoid},&f1)
+    end
+  end
+
+  bm.report("Simpson:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:simpson},&f1)
+    end
+  end
+
+  bm.report("Simpson 3/8:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:simpson3by8},&f1)
+    end
+  end
+
+  bm.report("Boole:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:boole},&f1)
+    end
+  end
+
+  bm.report("Open Trapezoid:") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:open_trapezoid},&f1)
+    end
+  end
+
+  bm.report("Milne: ") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:milne},&f1)
+    end
+  end
+
+  bm.report("Adaptive Quadrature:") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:adaptive_quadrature},&f1)
+    end
+  end
+
+  bm.report("Gauss: ") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:gauss},&f1)
+    end
+  end
+
+  bm.report("Gauss Kronrod: ") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:gauss_kronrod},&f1)
+    end
+  end
+
+  bm.report("Romberg: ") do
+      iterations.times do
+        Integration.integrate(0,1,{:method=>:romberg},&f1)
+    end
+  end
 end
 
-f2 = lambda{|x| 37*x**3 + 43*x**2 + x }
-puts "f(x) =  37x^3 + 43x^2 + x"
-Benchmark.bm do |x|
-  x.report("Rectangle: 			")		{Integration.integrate(0,1,{:method=>:rectangle},&f1)}
-  x.report("Trapezoid: 			")		{Integration.integrate(0,1,{:method=>:trapezoid},&f2)}
-  x.report("Simpson: 			")			{Integration.integrate(0,1,{:method=>:simpson},&f2)}
-  x.report("Simpson 3/8: 		")		{Integration.integrate(0,1,{:method=>:simpson3by8},&f2)}
-  x.report("Boole: 				")			{Integration.integrate(0,1,{:method=>:boole},&f2)}
-  x.report("Open Trapezoid: 	")  	{Integration.integrate(0,1,{:method=>:open_trapezoid},&f2)}
-  x.report("Milne: 				")  			{Integration.integrate(0,1,{:method=>:milne},&f2)}
-  x.report("Adaptive Quadrature:")  {Integration.integrate(0,1,{:method=>:adaptive_quadrature},&f2)}
-  x.report("Gauss: 				")			{Integration.integrate(0,1,{:method=>:gauss},&f2)}
-  x.report("Gauss Kronrod: 		")	{Integration.integrate(0,1,{:method=>:gauss_kronrod},&f2)}
-  x.report("Romberg: 			")			{Integration.integrate(0,1,{:method=>:romberg},&f2)}
-end
+# Benchmarking for function f(x) = f(x) = 49x^3 + 37cos(x)+ 9x
+
+f1 = lambda{|x| 49*x**3 + 37*Math::cos(x) + 9*x}
+puts "f(x) = 49x^3 + 37cos(x)+ 9x"
+Benchmark.bm(25) do |bm|
+  
+  bm.report("Rectangle:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:rectangle},&f1)
+    end
+  end
+  
+  bm.report("Trapezoid:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:trapezoid},&f1)
+    end
+  end
+  
+  bm.report("Simpson:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:simpson},&f1)
+    end
+  end
+  
+  bm.report("Simpson 3/8:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:simpson3by8},&f1)
+    end
+  end
+  
+  bm.report("Boole:") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:boole},&f1)
+    end
+  end
+  
+  bm.report("Open Trapezoid:") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:open_trapezoid},&f1)
+    end
+  end
+  
+  bm.report("Milne: ") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:milne},&f1)
+    end
+  end
+  
+  bm.report("Adaptive Quadrature:") do  
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:adaptive_quadrature},&f1)
+    end
+  end
+  
+  bm.report("Gauss: ") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:gauss},&f1)
+    end
+  end
+  
+  bm.report("Gauss Kronrod: ") do
+    iterations.times do
+        Integration.integrate(0,1,{:method=>:gauss_kronrod},&f1)
+    end
+  end
+  
+  bm.report("Romberg: ") do
+      iterations.times do
+        Integration.integrate(0,1,{:method=>:romberg},&f1)
+    end
+  end
+end 
