@@ -1,24 +1,24 @@
 # Comparing the accuracy of different integraiton methods
-
+# text table is required to display the results in a nice table
 require 'integration'
 require 'text-table'
 
-f1 = lambda{|x| x**2}
+# put the funtion you want to benchmark here
+func = lambda{|x| x**2}
+#put the actual result of the integration here
 actual_result = 1/3.0
-puts "f(x) = x^2 on (0,1)"
 
 table = Text::Table.new
 table.head = ['Method','Result','Actual Result','Error','Accuracy']
 #adaptive quadrature and romberg removed as they are returning nil values and are failing tests also
 for method in [:rectangle,:trapezoid,:simpson, :gauss, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid, :milne]
-  result = Integration.integrate(0,1,{:method=>method},&f1)
+  result = Integration.integrate(0,1,{:method=>method},&func)
   if result == nil
     puts method
   else
   error = (actual_result-result).abs
-  table.rows << [method,result,actual_result,error,100 * error/actual_result.to_f]
+  table.rows << [method,result,actual_result,error,100*(1-error/actual_result.to_f)]
   end
-  
 end
 puts table.to_s
 
