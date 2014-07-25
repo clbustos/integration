@@ -240,6 +240,7 @@ class Integration
       r[1][1] = (h / 2) * (yield(a) + yield(b))
       j = 1
       while j <= 11 && tolerance < close
+        puts '1'
         j += 1
         r[j][0] = 0
         h /= 2
@@ -257,6 +258,10 @@ class Integration
       return r[j][j]
     end
   
+    def newrom(a,b,tolerance)
+
+    end
+
     def monte_carlo(t1, t2, n)
       width = (t2 - t1).to_f
       height = nil
