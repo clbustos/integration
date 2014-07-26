@@ -126,7 +126,7 @@ class Integration
       ac
     end
     
-    def adaptive_quadrature(a, b, tolerance)
+    def adaptive_quadrature(a, b, tolerance)  
       h = (b.to_f - a) / 2
       fa = yield(a)
       fc = yield(a + h)
@@ -237,7 +237,7 @@ class Integration
       r = [[], [], [], [], [], [], [], [], [], [], [], [], []];
       r[1][1] = (h / 2) * (yield(a) + yield(b))
       j = 1
-      while j <= 11 && tolerance >close
+      while j <= 11 && tolerance>close
         j += 1
         r[j][0] = 0
         h /= 2
@@ -364,15 +364,17 @@ class Integration
       current_step=initial_step
 
       if(method==:adaptive_quadrature or method==:romberg or method==:gauss or method== :gauss_kronrod)
-        if(method==:gauss or method==:romberg)
+        if(method==:gauss )
           initial_step=10 if initial_step>10
-          tolerance=initial_step
+          tolerance = initial_step
           method_obj.call(lower_bound, upper_bound, tolerance, &f)
         elsif (method==:gauss_kronrod)
           initial_step=10 if initial_step>10
           tolerance=initial_step
           points = points if points != nil
           method_obj.call(lower_bound, upper_bound, tolerance, points, &f)
+        else
+          method_obj.call(lower_bound, upper_bound, tolerance, &f)
         end
       else
         #puts "iniciando"
