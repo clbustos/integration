@@ -10,8 +10,8 @@ actual_result = 1/3.0
 
 table = Text::Table.new
 table.head = ['Method','Result','Actual Result','Error','Accuracy']
-#adaptive quadrature and romberg removed as they are returning nil values and are failing tests also
-for method in [:rectangle,:trapezoid,:simpson, :gauss, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid, :milne]
+
+for method in [:rectangle,:trapezoid,:simpson,:romberg,:adaptive_quadrature, :gauss, :gauss_kronrod, :simpson3by8, :boole, :open_trapezoid, :milne]
   result = Integration.integrate(0,1,{:method=>method},&func)
   if result == nil
     puts method
