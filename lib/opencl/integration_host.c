@@ -19,7 +19,7 @@ enum methods{
       monte_carlo
 };
 
-float opencl_integration(float lower, float upper, float n, char* f,
+float opencl_integration(float lower, float upper, int n, char* f,
                         enum methods method, char* path_to_kerne) {
 
     char* source_str;
