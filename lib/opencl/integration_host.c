@@ -1,10 +1,16 @@
 // This file contains the host code of the openCL supported integration
 #include <stdio.h>
-#include <CL/cl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdlib.h>
 #include <limits.h>       //For PATH_MAX
+
+// import OpenCL headers assuming OS is a linux version or MAC
+#ifdef __APPLE__
+    #include<OpenCL/opencl.h>
+#else
+    #include<CL/cl.h>
+#endif
 
 #define MAX_SOURCE_SIZE (0x100000) // maximum size allowed for the kernel text
 
@@ -25,12 +31,12 @@ float opencl_integration(float lower, float upper, int n, char* f,
     char* source_str;
     size_t source_size;
     int i = 0;
-    float dx = (upper - lower) / (n*1.0);
+    float dx = (upper - lower) / n;
     float *results = (float*) malloc(n * sizeof(float));
 
     // read the corresponding kernel
     FILE* fp;
-    sprintf(path_to_kerne, "%s%s", path_to_kerne, "/kernel.cl");
+    sprintf(path_to_kerne, "%s%s", path_to_kerne, "/unidimensional_kernel.cl");
     fp = fopen(path_to_kerne, "r");
 
     // if the kernel file doesn't exist, stop the execution
@@ -78,7 +84,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
 
     // create memory buffers to share memory with kernel program 
     cl_mem lower_obj  = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
-    cl_mem upper_obj  = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
+    cl_mem dx_obj     = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
     cl_mem n_obj      = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(int)       , NULL, &ret);
     cl_mem method_obj = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(int)       , NULL, &ret);
     cl_mem result_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * n , NULL, &ret);
@@ -87,7 +93,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
 
     // writes the input values into the allocated memory buffers
     ret = clEnqueueWriteBuffer(command_queue, lower_obj,  CL_TRUE, 0, sizeof(float)    , &lower , 0, NULL, NULL);
-    ret = clEnqueueWriteBuffer(command_queue, upper_obj,  CL_TRUE, 0, sizeof(float)    , &upper , 0, NULL, NULL);
+    ret = clEnqueueWriteBuffer(command_queue, dx_obj   ,  CL_TRUE, 0, sizeof(float)    , &dx    , 0, NULL, NULL);
     ret = clEnqueueWriteBuffer(command_queue, n_obj    ,  CL_TRUE, 0, sizeof(int)      , &n     , 0, NULL, NULL);
     ret = clEnqueueWriteBuffer(command_queue, method_obj, CL_TRUE, 0, sizeof(int)      , &method, 0, NULL, NULL);
     //ret = clEnqueueWriteBuffer(command_queue, epsilon_obj , CL_TRUE, 0, sizeof(float)    , &epsilon       , 0, NULL, NULL);
@@ -105,7 +111,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
 
     // set arguments of kernel function
     ret = clSetKernelArg(kernel, 0 , sizeof(cl_mem)    , (void *)&lower_obj);    
-    ret = clSetKernelArg(kernel, 1 , sizeof(cl_mem)    , (void *)&upper_obj);    
+    ret = clSetKernelArg(kernel, 1 , sizeof(cl_mem)    , (void *)&dx_obj);    
     ret = clSetKernelArg(kernel, 2 , sizeof(cl_mem)    , (void *)&n_obj);    
     ret = clSetKernelArg(kernel, 3 , sizeof(cl_mem)    , (void *)&method_obj);    
     ret = clSetKernelArg(kernel, 4 , sizeof(cl_mem) * n, (void *)&result_obj);
@@ -126,7 +132,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
     ret = clReleaseProgram(program);
 
     ret = clReleaseMemObject(lower_obj);
-    ret = clReleaseMemObject(upper_obj);
+    ret = clReleaseMemObject(dx_obj);
     ret = clReleaseMemObject(n_obj);
     ret = clReleaseMemObject(method_obj);
     //ret = clReleaseMemObject(epsilon_obj);
