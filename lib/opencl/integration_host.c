@@ -25,14 +25,14 @@ enum methods{
       monte_carlo
 };
 
-float opencl_integration(float lower, float upper, int n, char* f,
+double opencl_integration(double lower, double upper, int n, char* f,
                         enum methods method, char* path_to_kerne) {
 
     char* source_str;
     size_t source_size;
     int i = 0;
-    float dx = (upper - lower) / n;
-    float *results = (float*) malloc(n * sizeof(float));
+    double dx = (upper - lower) / n;
+    double *results = (double*) malloc(n * sizeof(double));
 
     // read the corresponding kernel
     FILE* fp;
@@ -61,7 +61,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
 
     // create the complete kernel code appending,
     // f()   - integrating function
-    sprintf(source_str, "float f(float x){return (%s);}\n%s", f, temp_source);
+    sprintf(source_str, "double f(double x){return (%s);}\n%s", f, temp_source);
 
     // printf("\nfunction----------------------------\n%s\n--------------------------\n", source_str);
     source_size = strlen(source_str);
@@ -83,21 +83,21 @@ float opencl_integration(float lower, float upper, int n, char* f,
     cl_command_queue command_queue = clCreateCommandQueue(context, device_id, 0, &ret);    
 
     // create memory buffers to share memory with kernel program 
-    cl_mem lower_obj  = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
-    cl_mem dx_obj     = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
+    cl_mem lower_obj  = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(double)     , NULL, &ret);
+    cl_mem dx_obj     = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(double)     , NULL, &ret);
     cl_mem n_obj      = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(int)       , NULL, &ret);
     cl_mem method_obj = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(int)       , NULL, &ret);
-    cl_mem result_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * n , NULL, &ret);
-    //cl_mem epsilon_obj      = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
-    //cl_mem golden_obj       = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(float)     , NULL, &ret);
+    cl_mem result_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(double) * n , NULL, &ret);
+    //cl_mem epsilon_obj      = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(double)     , NULL, &ret);
+    //cl_mem golden_obj       = clCreateBuffer(context, CL_MEM_READ_ONLY,  sizeof(double)     , NULL, &ret);
 
     // writes the input values into the allocated memory buffers
-    ret = clEnqueueWriteBuffer(command_queue, lower_obj,  CL_TRUE, 0, sizeof(float)    , &lower , 0, NULL, NULL);
-    ret = clEnqueueWriteBuffer(command_queue, dx_obj   ,  CL_TRUE, 0, sizeof(float)    , &dx    , 0, NULL, NULL);
+    ret = clEnqueueWriteBuffer(command_queue, lower_obj,  CL_TRUE, 0, sizeof(double)    , &lower , 0, NULL, NULL);
+    ret = clEnqueueWriteBuffer(command_queue, dx_obj   ,  CL_TRUE, 0, sizeof(double)    , &dx    , 0, NULL, NULL);
     ret = clEnqueueWriteBuffer(command_queue, n_obj    ,  CL_TRUE, 0, sizeof(int)      , &n     , 0, NULL, NULL);
     ret = clEnqueueWriteBuffer(command_queue, method_obj, CL_TRUE, 0, sizeof(int)      , &method, 0, NULL, NULL);
-    //ret = clEnqueueWriteBuffer(command_queue, epsilon_obj , CL_TRUE, 0, sizeof(float)    , &epsilon       , 0, NULL, NULL);
-    //ret = clEnqueueWriteBuffer(command_queue, golden_obj  , CL_TRUE, 0, sizeof(float)    , &golden        , 0, NULL, NULL);
+    //ret = clEnqueueWriteBuffer(command_queue, epsilon_obj , CL_TRUE, 0, sizeof(double)    , &epsilon       , 0, NULL, NULL);
+    //ret = clEnqueueWriteBuffer(command_queue, golden_obj  , CL_TRUE, 0, sizeof(double)    , &golden        , 0, NULL, NULL);
 
     // create kernel program
     cl_program program = clCreateProgramWithSource(context, 1, (const char **)&source_str, (const size_t *)&source_size, &ret);
@@ -123,7 +123,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
     ret = clEnqueueNDRangeKernel(command_queue, kernel, 1, NULL, &global_item_size, NULL, 0, NULL, NULL);
     
     // retrieve results from the shared memory buffers
-    ret = clEnqueueReadBuffer(command_queue, result_obj, CL_TRUE, 0, sizeof(float) * n, results, 0, NULL, NULL);
+    ret = clEnqueueReadBuffer(command_queue, result_obj, CL_TRUE, 0, sizeof(double) * n, results, 0, NULL, NULL);
 
     // clear the allocated memory
     ret = clFlush(command_queue);
@@ -142,7 +142,7 @@ float opencl_integration(float lower, float upper, int n, char* f,
     ret = clReleaseContext(context);
     free(source_str);
 
-    float final_result = 0;
+    double final_result = 0;
     for(i = 0; i < n; ++i) {
         final_result += results[i];
     }
