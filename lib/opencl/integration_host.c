@@ -149,7 +149,3 @@ float opencl_integration(float lower, float upper, int n, char* f,
 
     return final_result;
 }
-
-int main() {
-    return 0;
-}
