@@ -15,8 +15,8 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-require "rake/gempackagetask"
-Rake::GemPackageTask.new(gemspec).define
+require "rubygems/package_task"
+Gem::PackageTask.new(gemspec).define
 
 desc "install the gem locally"
 task :install => [:package] do
