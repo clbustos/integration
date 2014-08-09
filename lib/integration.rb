@@ -187,9 +187,10 @@ class Integration
         else
           raise "Invalid number of spaced abscissas #{n}, should be 1-10"
       end
+      
       sum = 0
       (0...n).each do |i|
-        t = ((t1.to_f + t2) / 2) + (((t2 - t1) / 2) * z[i])
+        t = ((t1.to_f + t2) / 2.0) + (((t2 - t1) / 2.0) * z[i])        
         sum += w[i] * yield(t)
       end
       return ((t2 - t1) / 2.0) * sum
@@ -224,7 +225,7 @@ class Integration
       end
       sum = 0
       (0...n).each do |i|
-        t = ((t1.to_f + t2) / 2) + (((t2 - t1) / 2) * z[i])
+        t = ((t1.to_f + t2) / 2.0) + (((t2 - t1) / 2.0) * z[i])
         sum += w[i] * yield(t)
       end
       return ((t2 - t1) / 2.0) * sum
