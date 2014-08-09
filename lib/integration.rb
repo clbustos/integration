@@ -1,6 +1,6 @@
 # Copyright (c) 2005  Beng (original code)
-#               2011  clbustos
-# 
+#               2011  Claudio Bustos
+#               XXXX -> Add new developers
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation
@@ -89,7 +89,7 @@ class Integration
       })+f[t2.to_f].to_f)
       out
     end
-
+    # TODO: Document method
     def simpson3by8(t1, t2, n, &f)
       d = (t2-t1) / n.to_f 
       ac = 0
@@ -98,7 +98,7 @@ class Integration
       end
       ac
     end
-
+    # TODO: Document method
     def boole(t1, t2, n, &f)
       d = (t2-t1) / n.to_f 
       ac = 0
@@ -108,6 +108,7 @@ class Integration
       ac
     end
 
+    # TODO: Document method
     def open_trapezoid(t1, t2, n, &f)
       d = (t2-t1) / n.to_f 
       ac = 0
@@ -116,7 +117,7 @@ class Integration
       end
       ac
     end
-
+    # TODO: Document method
     def milne(t1, t2, n, &f)
       d = (t2-t1) / n.to_f 
       ac = 0
@@ -125,7 +126,7 @@ class Integration
       end
       ac
     end
-    
+    # TODO: Document method
     def adaptive_quadrature(a, b, tolerance)  
       h = (b.to_f - a) / 2
       fa = yield(a)
@@ -150,7 +151,7 @@ class Integration
       }
       return helper.call(a, b, fa, fb, fc, h, s, 1)
     end
-  
+    # TODO: Document method
     def gauss(t1, t2, n)
       case n
         when 1
@@ -193,7 +194,7 @@ class Integration
       end
       return ((t2 - t1) / 2.0) * sum
     end
-
+    # TODO: Document method
     def gauss_kronrod(t1,t2,n,points)
       #g7k15
       case points
@@ -228,33 +229,31 @@ class Integration
       end
       return ((t2 - t1) / 2.0) * sum
     end
-
-    def romberg(a, b, tolerance)
+    # TODO: Document method
+    def romberg(a, b, tolerance,max_iter=20)
       # NOTE one-based arrays are used for convenience
       h = b.to_f - a
       m = 1
       close = 1
-      r = [[], [], [], [], [], [], [], [], [], [], [], [], []];
-      r[1][1] = (h / 2) * (yield(a) + yield(b))
-      j = 1
-      while j <= 11 && tolerance>close
-        j += 1
-        r[j][0] = 0
-        h /= 2
-        sum = 0
-        (1..m).each do |k|
-          sum += yield(a + (h * ((2 * k) - 1)))
-        end
-        m *= 2
-        r[j][1] = r[j-1][1] / 2 + (h * sum)
-        (1..j-1).each do |k|
-          r[j][k+1] = r[j][k] + ((r[j][k] - r[j-1][k]) / ((4 ** k) - 1))
+      r = [[]]
+      r[0][0] = (h / 2) * (yield(a) + yield(b))
+      j = 0
+      
+      hn=lambda {|n| h/(2**n)}
+      while j <= max_iter && tolerance<close
+        j+=1
+        r.push((j+1).times.map{[]})
+        ul=2**(j-1)
+        r[j][0]=r[j-1][0] / 2.0 + hn[j] * (1..ul).inject(0) {|ac,k| ac+yield(a + (2*k-1)* hn[j])}
+        (1..j).each do |k|
+          r[j][k] = ( (4**k) * r[j][k-1] - r[j-1][k-1]) / ((4**k)-1)
         end
         close = (r[j][j] - r[j-1][j-1])
       end
-      return r[j][j]
+      r[j][j]
     end
-  
+    
+    # TODO: Document method
     def monte_carlo(t1, t2, n)
       width = (t2 - t1).to_f
       height = nil
@@ -322,6 +321,7 @@ class Integration
         raise "Unknown integration method \"#{options[:method]}\""
       end
     end
+    # TODO: Document method
     def integrate_gsl(lower_bound,upper_bound,options,&f) 
       
       f = GSL::Function.alloc(&f)
