@@ -4,6 +4,9 @@ require 'rubygems'
 require 'integration'
 require 'bundler'
 
+Bundler::GemHelper.install_tasks
+
+
 gemspec = eval(IO.read("integration.gemspec"))
 
 
@@ -14,6 +17,8 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
+
+
 
 require "rubygems/package_task"
 Gem::PackageTask.new(gemspec).define
