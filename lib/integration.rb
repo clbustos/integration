@@ -235,12 +235,10 @@ class Integration
       h = b.to_f - a
       m = 1
       close = 1
-      r = [[]]
-      r[0][0] = (h / 2) * (yield(a) + yield(b))
+      r = [[(h / 2) * (yield(a) + yield(b))]]
       j = 0
-      
       hn=lambda {|n| h/(2**n)}
-      while j <= max_iter && tolerance<close
+      while j <= max_iter && tolerance < close
         j+=1
         r.push((j+1).times.map{[]})
         ul=2**(j-1)
