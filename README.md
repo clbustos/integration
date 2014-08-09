@@ -1,19 +1,19 @@
-= integration
+# integration
 
 * http://github.com/clbustos/integration
 
-== DESCRIPTION:
+## DESCRIPTION:
 
 Numerical integration for Ruby, with a simple interface
 
-== FEATURES/PROBLEMS:
+## FEATURES/PROBLEMS:
 
 * Use only one method: Integration.integrate
 * Rectangular, Trapezoidal, Simpson, Adaptive quadrature, Monte Carlo and Romberg integration methods available on pure Ruby. 
 * If available, uses Ruby/GSL QNG non-adaptive Gauss-Kronrod integration and QAG adaptive integration, with support for Infinity+ and Infinity- 
 
 
-== SYNOPSIS:
+## SYNOPSIS:
 
   Integration.integrate(1,2,{:tolerance=>1e-10,:method=>:simpson}) {|x| x**2} => 2.333333
   
@@ -23,18 +23,18 @@ Numerical integration for Ruby, with a simple interface
   Integration.integrate(Integration::MInfinity, 0 , {:tolerance=>1e-10}, &normal_pdf) => 0.5
   Integration.integrate(0, Integration::Infinity , {:tolerance=>1e-10}, &normal_pdf) => 0.5
   
-== REQUIREMENTS:
+## REQUIREMENTS:
 
 * Ruby/GSL, for better performance and support for infinite bounds
 
-== INSTALL:
+## INSTALL:
 
   gem install integration
   
-== LICENSE:
+## LICENSE:
 
     Copyright (c) 2005  Beng
-                  2011  clbustos
+                  2011.2014  clbustos
     
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
