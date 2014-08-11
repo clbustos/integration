@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
-
+require "integration" 
 
 Gem::Specification.new do |s|
   s.name = "integration"
-  s.version = "0.1.1"
+  s.version = Integration::VERSION
   s.authors = ["Claudio Bustos","Ben Gimpert"]
   s.description = "Numerical integration for Ruby, with a simple interface"
   s.email = ["clbustos@gmail.com", "No Email"]

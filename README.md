@@ -2,6 +2,8 @@
 
 * http://github.com/clbustos/integration
 
+[![Build Status](https://travis-ci.org/clbustos/integration.svg?branch=master)](https://travis-ci.org/clbustos/integration)
+
 ## DESCRIPTION:
 
 Numerical integration for Ruby, with a simple interface
