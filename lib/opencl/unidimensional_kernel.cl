@@ -16,9 +16,17 @@ __kernel void integrate(__global const double *a, __global const double *dx, __g
  
     // Do the operation
     if(i <= n) {
-        //results[i] = (f((*a) + (*dx) * i) + f((*a) + (*dx) * (i + 1))) * (*dx) / 2;
-
-        results[i] = simpson(i, *a, *dx); 
+        int m = *method;
+        switch(m) {
+            case 0: results[i] = rectangle(i, *a, *dx);
+                    break;
+            case 1: results[i] = trapezoid(i, *a, *dx);
+                    break;
+            case 2: results[i] = simpson(i, *a, *dx);
+                    break;
+            case 3: results[i] = romberg(i, *a, *dx);
+                    break;
+        }
     }
 }
 
@@ -37,6 +45,3 @@ double simpson(int i, double a, double dx) {
     return (dx / 6) * (f(lower) + 4 * f(lower + 0.5 * dx) + f(lower + dx));
 }
 
-double romberg(int i, double a, double dx) {
-    
-}
